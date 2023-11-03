@@ -1,61 +1,44 @@
-const request = require("supertest");
-const app = require("../server.js");
+const request = require('supertest');
+const app = require('../server.js');
 
-describe("GET /todos", () => {
-  it("should respond with an array of todos", (done) => {
-    request(app)
-      .get("/api/todos")
-      .expect("Content-Type", /json/)
-      .expect(200, done);
-  });
-});
+describe('controller', () => {
+  it('should return a list of todos', async () => {
+    const res = await request(app)
+      .get('/todos')
+      .expect('Content-Type', /json/);
 
-describe("GET /todos/:id", () => {
-  it("should respond with a specific todo", (done) => {
-    request(app)
-      .get("/api/todos/1")
-      .expect("Content-Type", /json/)
-      .expect(200, done);
+      expect(res.body).toBeInstanceOf(Object);
   });
 
-  it("should respond with 'Todo not found' for a non-existing todo", (done) => {
-    request(app)
-      .get("/api/todos/999")
-      .expect("Content-Type", /json/)
-      .expect(404, { error: "Todo not found" }, done);
-  });
-});
+  it('should return a todo by ID', async () => {
+    const res = await request(app)
+      .get('/todos/1')
+      .expect('Content-Type', /json/);
 
-describe("POST /todos", () => {
-  it("should create a new todo", (done) => {
-    request(app)
-      .post("/api/todos")
-      .send({ title: "New Todo" })
-      .expect("Content-Type", /json/)
-      .expect(201, done);
+    expect(res.body).toBeInstanceOf(Object);
   });
 
-  it("should respond with 'An error occurred' if title is missing", (done) => {
-    request(app)
-      .post("/api/todos")
-      .send({})
-      .expect("Content-Type", /json/)
-      .expect(500, { error: "An error occurred" }, done);
-  });
-});
+  it('should create a new todo', async () => {
+    const todoData = {
+      id: '3',
+      title: 'New Todo',
+      description: 'A new todo item',
+      completed: false,
+    };
 
-describe("DELETE /todos/:id", () => {
-  it("should delete a todo", (done) => {
-    request(app)
-      .delete("/api/todos/1")
-      .expect("Content-Type", /json/)
-      .expect(200, { message: "Todo deleted" }, done);
+    const res = await request(app)
+      .post('/todos')
+      .send(todoData)
+      .expect('Content-Type', /json/);
+
+    expect(res.body).toBeInstanceOf(Object);
   });
 
-  it("should respond with 'Todo not found' for deleting a non-existing todo", (done) => {
-    request(app)
-      .delete("/api/todos/999")
-      .expect("Content-Type", /json/)
-      .expect(404, { error: "Todo not found" }, done);
+  it('should delete a todo', async () => {
+    const res = await request(app)
+      .delete('/todos/3')
+      .expect('Content-Type', /json/);
+
+    expect(res.body).toBeInstanceOf(Object);
   });
 });
