@@ -1,0 +1,19 @@
+stages:
+  - test
+  - build
+
+image: node:14
+
+before_script:
+  - npm install
+
+test:
+  stage: test
+  script:
+    - npm test
+
+build:
+  stage: build
+  script:
+    - docker build -t myapi .
+    - docker-compose up -d
